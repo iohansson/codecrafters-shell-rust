@@ -3,6 +3,9 @@ use std::io::stdout;
 use std::io::{self, Write};
 
 fn main() {
+    // read PATH environment variable
+    let path = std::env::var("PATH").unwrap_or_else(|_| "".to_string());
+    let paths = path.split(":").collect::<Vec<&str>>();
     loop {
         print!("$ ");
         stdout().flush().unwrap();
@@ -31,7 +34,18 @@ fn main() {
                 if command == "echo" || command == "type" || command == "exit" {
                     println!("{} is a shell builtin", command);
                 } else {
-                    println!("{}: not found", command);
+                    let mut found = false;
+                    for path in &paths {
+                        let path = format!("{}/{}", path, command);
+                        if std::path::Path::new(&path).exists() {
+                            println!("{} is {}", command, path);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if !found {
+                        println!("{}: not found", command);
+                    }
                 }
             }
             "exit" => break,
