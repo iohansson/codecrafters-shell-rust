@@ -26,6 +26,14 @@ fn main() {
                     .join(" ");
                 println!("{}", args);
             }
+            "type" => {
+                let command = input.trim().split_whitespace().skip(1).next().unwrap();
+                if command == "echo" || command == "type" || command == "exit" {
+                    println!("{} is a shell builtin", command);
+                } else {
+                    println!("{}: not found", command);
+                }
+            }
             "exit" => break,
             _ => println!("{}: command not found", command),
         }
