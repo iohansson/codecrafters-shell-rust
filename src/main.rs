@@ -12,6 +12,12 @@ fn main() {
         let mut input = String::new();
 
         stdin.read_line(&mut input).unwrap();
+
+        // Check if the user wants to exit
+        if input.trim() == "exit 0" {
+            break;
+        }
+
         println!("{}: command not found", input.trim());
     }
 }
