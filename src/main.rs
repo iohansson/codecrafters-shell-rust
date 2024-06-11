@@ -13,11 +13,18 @@ fn main() {
 
         stdin.read_line(&mut input).unwrap();
 
-        // Check if the user wants to exit
-        if input.trim() == "exit 0" {
-            break;
-        }
+        let command = input.trim().split_whitespace().next().unwrap();
 
-        println!("{}: command not found", input.trim());
+        match command {
+            "echo" => {
+                let args = input.trim().split_whitespace().skip(1);
+                for arg in args {
+                    print!("{} ", arg);
+                }
+                println!();
+            }
+            "exit" => break,
+            _ => println!("{}: command not found", command),
+        }
     }
 }
