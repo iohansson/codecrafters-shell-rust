@@ -17,11 +17,14 @@ fn main() {
 
         match command {
             "echo" => {
-                let args = input.trim().split_whitespace().skip(1);
-                for arg in args {
-                    print!("{} ", arg);
-                }
-                println!();
+                // join all the arguments with a space
+                let args = input
+                    .trim()
+                    .split_whitespace()
+                    .skip(1)
+                    .collect::<Vec<&str>>()
+                    .join(" ");
+                println!("{}", args);
             }
             "exit" => break,
             _ => println!("{}: command not found", command),
