@@ -51,8 +51,8 @@ fn main() {
             }
             "exit" => break,
             _ => {
-                let program = *input_to_args(&input).get(1).unwrap();
-                let args = input_to_args(&input).into_iter().skip(2);
+                let program = *input_to_args(&input).get(0).unwrap();
+                let args = input_to_args(&input).into_iter().skip(1);
                 let path = find_path(program);
                 match path {
                     Some(path) => {
