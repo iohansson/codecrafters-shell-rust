@@ -60,7 +60,7 @@ fn main() {
                             .args(args)
                             .output()
                             .expect("failed to execute process");
-                        println!("{}", String::from_utf8_lossy(&child_output.stdout));
+                        print!("{}", String::from_utf8_lossy(&child_output.stdout));
                     }
                     None => println!("{}: command not found", program),
                 }
