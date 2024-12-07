@@ -39,7 +39,7 @@ fn main() {
             }
             "type" => {
                 let command = *input_to_args(&input).get(1).unwrap();
-                if command == "echo" || command == "type" || command == "exit" {
+                if command == "echo" || command == "type" || command == "exit" || command == "pwd" {
                     println!("{} is a shell builtin", command);
                 } else {
                     let path = find_path(command);
@@ -50,6 +50,10 @@ fn main() {
                 }
             }
             "exit" => break,
+            "pwd" => {
+                let path = std::env::current_dir().unwrap();
+                println!("{}", path.display());
+            }
             _ => {
                 let program = *input_to_args(&input).get(0).unwrap();
                 let args = input_to_args(&input).into_iter().skip(1);
