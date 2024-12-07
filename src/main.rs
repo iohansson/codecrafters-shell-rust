@@ -55,9 +55,10 @@ fn main() {
                 println!("{}", path.display());
             }
             "cd" => {
-                let path = *input_to_args(&input).get(1).unwrap();
-                let path = std::path::Path::new(path);
-                if std::env::set_current_dir(path).is_err() {
+                let current_path = std::env::current_dir().unwrap();
+                let new_path = *input_to_args(&input).get(1).unwrap();
+                let path = current_path.join(new_path);
+                if std::env::set_current_dir(&path).is_err() {
                     println!("cd: {}: No such file or directory", path.display());
                 }
             }
