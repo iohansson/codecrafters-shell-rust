@@ -39,7 +39,7 @@ fn main() {
             }
             "type" => {
                 let command = *input_to_args(&input).get(1).unwrap();
-                if command == "echo" || command == "type" || command == "exit" || command == "pwd" {
+                if command == "echo" || command == "type" || command == "exit" || command == "pwd" || command == "cd" {
                     println!("{} is a shell builtin", command);
                 } else {
                     let path = find_path(command);
@@ -53,6 +53,13 @@ fn main() {
             "pwd" => {
                 let path = std::env::current_dir().unwrap();
                 println!("{}", path.display());
+            }
+            "cd" => {
+                let path = *input_to_args(&input).get(1).unwrap();
+                let path = std::path::Path::new(path);
+                if std::env::set_current_dir(path).is_err() {
+                    println!("cd: {}: No such file or directory", path.display());
+                }
             }
             _ => {
                 let program = *input_to_args(&input).get(0).unwrap();
