@@ -1,21 +1,27 @@
 use std::io::stdout;
 #[allow(unused_imports)]
 use std::io::{self, Write};
+use std::env;
+use std::path::Path;
 
 fn input_to_args(input: &str) -> Vec<&str> {
     input.trim().split_whitespace().collect()
 }
 
 fn find_path(command: &str) -> Option<String> {
-    let path = std::env::var("PATH").unwrap_or_else(|_| "".to_string());
+    let path = env::var("PATH").unwrap_or_else(|_| "".to_string());
     let paths = path.split(":").collect::<Vec<&str>>();
     for path in paths {
         let path = format!("{}/{}", path, command);
-        if std::path::Path::new(&path).exists() {
+        if Path::new(&path).exists() {
             return Some(path);
         }
     }
     None
+}
+
+fn normalize_path(path: &str) -> String {
+    path.replacen("~", env::var("HOME").unwrap().as_str(), 1)
 }
 
 fn main() {
@@ -57,7 +63,7 @@ fn main() {
             "cd" => {
                 let current_path = std::env::current_dir().unwrap();
                 let new_path = *input_to_args(&input).get(1).unwrap();
-                let path = current_path.join(new_path);
+                let path = current_path.join(normalize_path(new_path));
                 if std::env::set_current_dir(&path).is_err() {
                     println!("cd: {}: No such file or directory", path.display());
                 }
