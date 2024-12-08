@@ -13,10 +13,24 @@ fn read_input(input: &str) -> Vec<String> {
     let mut word = String::new();
     let mut in_single_quote = false;
     let mut in_double_quote = false;
+    let mut escape = false;
     for c in input.trim().chars() {
         match c {
+            '\\' => {
+                if in_single_quote || in_double_quote {
+                    word.push(c);
+                } else if escape {
+                    word.push(c);
+                    escape = false;
+                } else {
+                    escape = true;
+                }
+            }
             ' ' if !in_single_quote && !in_double_quote => {
-                if !word.is_empty() {
+                if escape {
+                    word.push(c);
+                    escape = false;
+                } else if !word.is_empty() {
                     input_vec.push(word);
                     word = String::new();
                 }
