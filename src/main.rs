@@ -15,44 +15,73 @@ fn read_input(input: &str) -> Vec<String> {
     let mut in_double_quote = false;
     let mut escape = false;
     for c in input.trim().chars() {
-        match c {
-            '\\' => {
-                if in_single_quote || in_double_quote {
+        if in_single_quote {
+            match c {
+                '\'' => {
+                    in_single_quote = false;
+                }
+                _ => {
                     word.push(c);
-                } else if escape {
+                }
+            }
+        } else if in_double_quote {
+            match c {
+                '"' if !escape => {
+                    in_double_quote = false;
+                }
+                '\\' => {
+                    if escape {
+                        word.push(c);
+                        escape = false;
+                    } else {
+                        escape = true;
+                    }
+                }
+                '$' | '`' | '"' if escape => {
                     word.push(c);
                     escape = false;
-                } else {
-                    escape = true;
                 }
-            }
-            ' ' if !in_single_quote && !in_double_quote => {
-                if escape {
-                    word.push(c);
-                    escape = false;
-                } else if !word.is_empty() {
-                    input_vec.push(word);
-                    word = String::new();
-                }
-            }
-            '\'' => {
-                if !in_double_quote {
-                    in_single_quote = !in_single_quote;
-                } else {
+                _ => {
+                    if escape {
+                        word.push('\\');
+                        escape = false;
+                    }
                     word.push(c);
                 }
             }
-            '"' => {
-                if !in_single_quote {
-                    in_double_quote = !in_double_quote;
-                } else {
+        } else {
+            match c {
+                '\'' => {
+                    in_single_quote = true;
+                }
+                '"' => {
+                    in_double_quote = true;
+                }
+                ' ' => {
+                    if escape {
+                        word.push(c);
+                        escape = false;
+                    } else if !word.is_empty() {
+                        input_vec.push(word);
+                        word = String::new();
+                    }
+                }
+                '\\' => {
+                    if escape {
+                        word.push(c);
+                        escape = false;
+                    } else {
+                        escape = true;
+                    }
+                }
+                _ => {
                     word.push(c);
                 }
-            }
-            _ => {
-                word.push(c);
             }
         }
+    }
+    if in_double_quote {
+        word.push('"');
     }
     if !word.is_empty() {
         input_vec.push(word);
